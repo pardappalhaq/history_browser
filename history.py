@@ -6,7 +6,8 @@ def tampilkan_menu():
     print("\n========= BROWSER SEDERHANA =========")
     print("1. Buka Website")
     print("2. Lihat Semua History (Tabel & Pagination)")
-    print("3. Keluar")
+    print("3. Cari History (Berdasarkan Keyword)")
+    print("0. Keluar")
     print("=====================================")
 
 def baca_history():
@@ -89,6 +90,25 @@ def lihat_history():
     """Fungsi untuk melihat history browsing dengan tabel dan pagination"""
     isi_history = baca_history()
     tampilkan_tabel_history(isi_history, "SEMUA HISTORY")
+    
+def cari_history():
+    """Mencari history berdasarkan keyword (Poin 1)"""
+    isi_history = baca_history()
+    if not isi_history:
+        print("\nHistory masih kosong!")
+        return
+        
+    keyword = input("\nMasukkan kata kunci website yang ingin dicari (contoh: youtube): ").lower()
+    hasil_pencarian = []
+    
+    for baris in isi_history:
+        if keyword in baris.lower():
+            hasil_pencarian.append(baris)
+            
+    if hasil_pencarian:
+        tampilkan_tabel_history(hasil_pencarian, f"HASIL PENCARIAN: '{keyword}'")
+    else:
+        print(f"\n✗ Tidak ada history yang cocok dengan kata kunci '{keyword}'.")
 
 def main():
     print("Selamat datang di Browser Sederhana!")
@@ -102,6 +122,8 @@ def main():
         elif pilihan == "2":
             lihat_history()
         elif pilihan == "3":
+            cari_history()
+        elif pilihan == "0":
             print("\nTerima kasih! Sampai jumpa!")
             break
         else:
