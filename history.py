@@ -8,7 +8,7 @@ def tampilkan_menu():
     print("1. Buka Website")
     print("2. Lihat Semua History")
     print("3. Cari History")
-    print("4. Lihat Situs Paling Sering Dikunjungi")
+    # print("4. Lihat Situs Paling Sering Dikunjungi")
     print("0. Keluar")
     print("=====================================")
 
@@ -112,29 +112,29 @@ def cari_history():
     else:
         print(f"\n✗ Tidak ada history yang cocok dengan kata kunci '{keyword}'.")
         
-def top_situs():
-    """Menampilkan situs yang paling sering dikunjungi (Poin 2)"""
-    isi_history = baca_history()
-    if not isi_history:
-        print("\nHistory masih kosong!")
-        return
+# def top_situs():
+#     """Menampilkan situs yang paling sering dikunjungi (Poin 2)"""
+#     isi_history = baca_history()
+#     if not isi_history:
+#         print("\nHistory masih kosong!")
+#         return
 
-    list_url = []
-    for baris in isi_history:
-        parts = baris.strip().split(" | ", 1)
-        if len(parts) == 2:
-            list_url.append(parts[1])
+#     list_url = []
+#     for baris in isi_history:
+#         parts = baris.strip().split(" | ", 1)
+#         if len(parts) == 2:
+#             list_url.append(parts[1])
             
-    # Menghitung kemunculan URL menggunakan Counter
-    hitungan_situs = Counter(list_url)
-    top_5 = hitungan_situs.most_common(5)
+#     # Menghitung kemunculan URL menggunakan Counter
+#     hitungan_situs = Counter(list_url)
+#     top_5 = hitungan_situs.most_common(5)
     
-    print("\n=== 5 SITUS PALING SERING DIKUNJUNGI ===")
-    print(f"{'Peringkat':<9} | {'Jumlah Buka':<12} | {'URL Website'}")
-    print("-" * 75)
-    for i, (url, jumlah) in enumerate(top_5):
-        print(f"#{i+1:<8} | {jumlah:<12} | {url}")
-    print("-" * 75)
+#     print("\n=== 5 SITUS PALING SERING DIKUNJUNGI ===")
+#     print(f"{'Peringkat':<9} | {'Jumlah Buka':<12} | {'URL Website'}")
+#     print("-" * 75)
+#     for i, (url, jumlah) in enumerate(top_5):
+#         print(f"#{i+1:<8} | {jumlah:<12} | {url}")
+#     print("-" * 75)
 
 def main():
     print("Selamat datang di Browser Sederhana!")
@@ -149,8 +149,8 @@ def main():
             lihat_history()
         elif pilihan == "3":
             cari_history()
-        elif pilihan == "4":
-            top_situs()
+        # elif pilihan == "4":
+        #     top_situs()
         elif pilihan == "0":
             print("\nTerima kasih! Sampai jumpa!")
             break
