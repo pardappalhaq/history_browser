@@ -6,7 +6,7 @@ def tampilkan_menu():
     """Menampilkan menu pilihan"""
     print("\n========= BROWSER SEDERHANA =========")
     print("1. Buka Website")
-    print("2. Lihat Semua History")
+    print("2. Lihat Semua Histori")
     print("3. Cari History")
     print("4. Lihat Situs Paling Sering Dikunjungi")
     print("0. Keluar")
