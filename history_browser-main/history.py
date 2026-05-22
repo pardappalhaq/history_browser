@@ -9,6 +9,7 @@ def tampilkan_menu():
     print("2. Lihat Semua History")
     print("3. Cari History")
     print("4. Lihat Situs Paling Sering Dikunjungi")
+    print("5. Filter History Berdasarkan Tanggal")
     print("0. Keluar")
     print("=====================================")
 
@@ -136,12 +137,44 @@ def top_situs():
         print(f"#{i+1:<8} | {jumlah:<12} | {url}")
     print("-" * 75)
 
+def filter_waktu_history():
+    """Filter history berdasarkan tanggal"""
+
+    isi_history = baca_history()
+
+    if not isi_history:
+        print("\nHistory masih kosong!")
+        return
+
+    print("\nFormat tanggal: YYYY-MM-DD")
+    tanggal_cari = input("Masukkan tanggal: ")
+
+    hasil_filter = []
+
+    for baris in isi_history:
+        parts = baris.strip().split(" | ", 1)
+
+        if len(parts) == 2:
+            waktu = parts[0]
+            tanggal_history = waktu.split(" ")[0]
+
+            if tanggal_history == tanggal_cari:
+                hasil_filter.append(baris)
+
+    if hasil_filter:
+        tampilkan_tabel_history(
+            hasil_filter,
+            f"HISTORY TANGGAL {tanggal_cari}"
+        )
+    else:
+        print(f"\n✗ Tidak ada history pada tanggal {tanggal_cari}")
+        
 def main():
     print("Selamat datang di Browser Sederhana!")
     
     while True:
         tampilkan_menu()
-        pilihan = input("Pilih menu (1-3): ")
+        pilihan = input("Pilih menu (0-5): ")
         
         if pilihan == "1":
             buka_website()
@@ -151,11 +184,13 @@ def main():
             cari_history()
         elif pilihan == "4":
             top_situs()
+        elif pilihan == "5":
+            filter_waktu_history()
         elif pilihan == "0":
             print("\nTerima kasih! Sampai jumpa!")
             break
         else:
-            print("\n✗ Pilih yang bener dong! Pilih 1-4")
+            print("\n✗ Pilih yang bener dong! Pilih 0-5")
 
 if __name__ == "__main__":
     main()
