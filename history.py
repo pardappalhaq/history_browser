@@ -10,6 +10,7 @@ def tampilkan_menu():
     print("3. Cari History")
     print("4. Lihat Situs Paling Sering Dikunjungi")
     print("5. Filter History Berdasarkan Tanggal")
+    print("6. Hapus History")
     print("0. Keluar")
     print("=====================================")
 
@@ -168,13 +169,85 @@ def filter_waktu_history():
         )
     else:
         print(f"\n✗ Tidak ada history pada tanggal {tanggal_cari}")
-        
+
+
+def hapus_history():
+    """Fungsi untuk menghapus history"""
+    isi_history = baca_history()
+
+    if not isi_history:
+        print("\nHistory masih kosong!")
+        return
+
+    print("\n=== MENU HAPUS ===")
+    print("1. Pilih history yang mau dihapus")
+    print("2. Hapus SEMUA history")
+    print("0. Batal")
+    print("==================")
+
+    pilihan_menu = input("\nPilih menu: ")
+
+    try:
+        nomor_menu = int(pilihan_menu)
+
+        if nomor_menu == 0:
+            konfirmasi_batal = input("Yakin nih mau dibatalin? (y/n): ")
+            if konfirmasi_batal.lower() == "y":
+                print("✗ Penghapusan dibatalkan, kembali ke menu utama")
+            else:
+                print("✓ Oke, balik lagi nih ke menu hapus.")
+                hapus_history()
+
+        elif nomor_menu == 1:
+            tampilkan_tabel_history(isi_history, "MENGHAPUS HISTORY (Pilih Nomor)")
+
+            pilihan_nomor = input(f"\nMasukkan nomor history yang mau dihapus (1-{len(isi_history)}): ")
+            try:
+                nomor_hapus = int(pilihan_nomor)
+
+                if 1 <= nomor_hapus <= len(isi_history):
+                    item_dihapus = isi_history[nomor_hapus - 1]
+                    print(f"\nAnda akan menghapus:")
+                    print(f"  {item_dihapus.strip()}")
+
+                    konfirmasi = input("\nYakin nih mau dihapus? (y/n): ")
+
+                    if konfirmasi.lower() == "y":
+                        isi_history.pop(nomor_hapus - 1)
+                        with open("history.txt", "w") as file:
+                            file.writelines(isi_history)
+
+                        print(f"✓ History nomor {nomor_hapus} berhasil dihapus!")
+                    else:
+                        print("✗ Penghapusan dibatalkan")
+                else:
+                    print(f"✗ Pilih yang bener dong! Pilih 1-{len(isi_history)}")
+
+            except ValueError:
+                print("✗ Input yang bener lah! Harus pake nomor")
+
+        elif nomor_menu == 2:
+            konfirmasi = input("Yakin mau hapus SEMUA history? (y/n): ")
+            if konfirmasi.lower() == "y":
+                with open("history.txt", "w") as file:
+                    file.write("")
+                print("✓ Semua history berhasil dihapus!")
+            else:
+                print("✗ Penghapusan dibatalkan")
+
+        else:
+            print("✗ Pilih yang bener dong! Pilih 0, 1, atau 2")
+
+    except ValueError:
+        print("✗ Input yang bener lah! Harus pake nomor")
+
+
 def main():
     print("Selamat datang di Browser Sederhana!")
     
     while True:
         tampilkan_menu()
-        pilihan = input("Pilih menu (0-5): ")
+        pilihan = input("Pilih menu (0-6): ")
         
         if pilihan == "1":
             buka_website()
@@ -186,11 +259,13 @@ def main():
             top_situs()
         elif pilihan == "5":
             filter_waktu_history()
+        elif pilihan == "6":
+            hapus_history()
         elif pilihan == "0":
             print("\nTerima kasih! Sampai jumpa!")
             break
         else:
-            print("\n✗ Pilih yang bener dong! Pilih 0-5")
+            print("\n✗ Pilih yang bener dong! Pilih 0-6")
 
 if __name__ == "__main__":
     main()
