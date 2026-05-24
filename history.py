@@ -2,6 +2,12 @@ import datetime
 import webbrowser
 from collections import Counter
 
+try:
+    from fpdf import FPDF
+except ImportError:
+    print("Install fpdf: pip install fpdf")
+    exit(1)
+
 def tampilkan_menu():
     """Menampilkan menu pilihan"""
     print("\n========= BROWSER SEDERHANA =========")
@@ -79,7 +85,7 @@ def tampilkan_tabel_history(isi_history, judul="HISTORY BROWSING"):
                 print(f"{nomor:<4} | {'-':<8} | {'Tidak diketahui':<20} | {baris.strip()}")
 
         print("-" * 85)
-        print(f"📄 Halaman {halaman_sekarang} dari {total_halaman} (Total {total_item} website)")
+        print(f"[Page] Halaman {halaman_sekarang} dari {total_halaman} (Total {total_item} website)")
         
         if total_halaman > 1:
             print("\nNavigasi: 'n' (Next), 'p' (Prev), 'q' (Keluar)")
@@ -97,7 +103,7 @@ def cari_apapun():
     """Fungsi untuk mencari apapun di Google"""
     keyword = input("\nKamu mau cari apa?: ").strip()
     if not keyword:
-        print("✗ Kata kunci tidak boleh kosong!")
+        print("[X] Kata kunci tidak boleh kosong!")
         return
 
     # Buat URL pencarian Google
@@ -109,10 +115,10 @@ def cari_apapun():
     with open("history.txt", "a") as file:
         file.write(f"{waktu_format} | {url}\n")
 
-    print(f"🔍 Mencari '{keyword}' di Google...")
+    print(f"[Search] Mencari '{keyword}' di Google...")
     webbrowser.open(url)
-    print(f"✓ Hasil pencarian terbuka")
-    print(f"✓ Tersimpan di history pada {waktu_format}")
+    print(f"[OK] Hasil pencarian terbuka")
+    print(f"[OK] Tersimpan di history pada {waktu_format}")
 
 def lihat_history():
     """Fungsi untuk melihat history browsing dengan tabel dan pagination"""
@@ -147,13 +153,13 @@ def lihat_history():
         if hasil_filter:
             tampilkan_tabel_history(hasil_filter, "HISTORY HARI INI")
         else:
-            print("\n✗ Tidak ada history hari ini")
+            print("\n[X] Tidak ada history hari ini")
 
     elif pilihan == "3":
         try:
             hari = int(input("\nMasukkan jumlah hari terakhir yang ingin dilihat: "))
             if hari < 1:
-                print("✗ Jumlah hari harus lebih dari 0")
+                print("[X] Jumlah hari harus lebih dari 0")
                 return
 
             from datetime import timedelta
@@ -176,10 +182,10 @@ def lihat_history():
             if hasil_filter:
                 tampilkan_tabel_history(hasil_filter, f"HISTORY {hari} HARI TERAKHIR")
             else:
-                print(f"\n✗ Tidak ada history dalam {hari} hari terakhir")
+                print(f"\n[X] Tidak ada history dalam {hari} hari terakhir")
 
         except ValueError:
-            print("✗ Input harus berupa angka!")
+            print("[X] Input harus berupa angka!")
     else:
         # Lihat semua history (default)
         isi_history = baca_history()
@@ -216,7 +222,7 @@ def cari_history():
         if hasil_pencarian:
             tampilkan_tabel_history(hasil_pencarian, f"HISTORY TANGGAL {tanggal_cari}")
         else:
-            print(f"\n✗ Tidak ada history pada tanggal {tanggal_cari}")
+            print(f"\n[X] Tidak ada history pada tanggal {tanggal_cari}")
 
     else:
         # Cari berdasarkan keyword (default)
@@ -230,7 +236,7 @@ def cari_history():
         if hasil_pencarian:
             tampilkan_tabel_history(hasil_pencarian, f"HASIL PENCARIAN: '{keyword}'")
         else:
-            print(f"\n✗ Tidak ada history yang cocok dengan kata kunci '{keyword}'.")
+            print(f"\n[X] Tidak ada history yang cocok dengan kata kunci '{keyword}'.")
         
 def top_situs():
     """Menampilkan situs yang paling sering dikunjungi (Poin 2)"""
@@ -280,9 +286,9 @@ def hapus_history():
         if nomor_menu == 0:
             konfirmasi_batal = input("Yakin nih mau dibatalin? (y/n): ")
             if konfirmasi_batal.lower() == "y":
-                print("✗ Penghapusan dibatalkan, kembali ke menu utama")
+                print("[X] Penghapusan dibatalkan, kembali ke menu utama")
             else:
-                print("✓ Oke, balik lagi nih ke menu hapus.")
+                print("[OK] Oke, balik lagi nih ke menu hapus.")
                 hapus_history()
 
         elif nomor_menu == 1:
@@ -304,20 +310,20 @@ def hapus_history():
                         with open("history.txt", "w") as file:
                             file.writelines(isi_history)
 
-                        print(f"✓ History nomor {nomor_hapus} berhasil dihapus!")
+                        print(f"[OK] History nomor {nomor_hapus} berhasil dihapus!")
                     else:
-                        print("✗ Penghapusan dibatalkan")
+                        print("[X] Penghapusan dibatalkan")
                 else:
-                    print(f"✗ Pilih yang bener dong! Pilih 1-{len(isi_history)}")
+                    print(f"[X] Pilih yang bener dong! Pilih 1-{len(isi_history)}")
 
             except ValueError:
-                print("✗ Input yang bener lah! Harus pake nomor")
+                print("[X] Input yang bener lah! Harus pake nomor")
 
         elif nomor_menu == 2:
             try:
                 hari = int(input("\nMasukkan jumlah hari terakhir yang mau dihapus: "))
                 if hari < 1:
-                    print("✗ Jumlah hari harus lebih dari 0")
+                    print("[X] Jumlah hari harus lebih dari 0")
                     return
 
                 from datetime import timedelta
@@ -352,14 +358,14 @@ def hapus_history():
                     if konfirmasi.lower() == "y":
                         with open("history.txt", "w") as file:
                             file.writelines(hasil_sisa)
-                        print(f"✓ {len(hasil_hapus)} history berhasil dihapus!")
+                        print(f"[OK] {len(hasil_hapus)} history berhasil dihapus!")
                     else:
-                        print("✗ Penghapusan dibatalkan")
+                        print("[X] Penghapusan dibatalkan")
                 else:
-                    print(f"\n✗ Tidak ada history dalam {hari} hari terakhir")
+                    print(f"\n[X] Tidak ada history dalam {hari} hari terakhir")
 
             except ValueError:
-                print("✗ Input harus berupa angka!")
+                print("[X] Input harus berupa angka!")
 
         elif nomor_menu == 3:
             # Hapus history hari ini
@@ -396,30 +402,30 @@ def hapus_history():
                 if konfirmasi.lower() == "y":
                     with open("history.txt", "w") as file:
                         file.writelines(hasil_sisa)
-                    print(f"✓ {len(hasil_hapus)} history hari ini berhasil dihapus!")
+                    print(f"[OK] {len(hasil_hapus)} history hari ini berhasil dihapus!")
                 else:
-                    print("✗ Penghapusan dibatalkan")
+                    print("[X] Penghapusan dibatalkan")
             else:
-                print("\n✗ Tidak ada history hari ini")
+                print("\n[X] Tidak ada history hari ini")
 
         elif nomor_menu == 4:
             konfirmasi = input("Yakin mau hapus SEMUA history? (y/n): ")
             if konfirmasi.lower() == "y":
                 with open("history.txt", "w") as file:
                     file.write("")
-                print("✓ Semua history berhasil dihapus!")
+                print("[OK] Semua history berhasil dihapus!")
             else:
-                print("✗ Penghapusan dibatalkan")
+                print("[X] Penghapusan dibatalkan")
 
         else:
-            print("✗ Pilih yang bener dong! Pilih 0, 1, 2, 3, atau 4")
+            print("[X] Pilih yang bener dong! Pilih 0, 1, 2, 3, atau 4")
 
     except ValueError:
-        print("✗ Input yang bener lah! Harus pake nomor")
+        print("[X] Input yang bener lah! Harus pake nomor")
 
 
 def print_history():
-    """Fungsi untuk print/save history ke file"""
+    """Fungsi untuk print/save history ke file PDF"""
     print("\n=== PILIH JENIS PRINT ===")
     print("1. Print history hari ini")
     print("2. Print history beberapa hari terakhir")
@@ -428,12 +434,10 @@ def print_history():
 
     pilihan = input("Pilih menu (1/2/3): ")
 
-    # Ambil semua history dulu
     from datetime import timedelta
     sekarang = datetime.datetime.now()
 
     if pilihan == "1":
-        # Print history hari ini
         batas_tanggal = sekarang.replace(hour=0, minute=0, second=0, microsecond=0)
         isi_history = baca_history()
         hasil_filter = []
@@ -450,16 +454,15 @@ def print_history():
                     pass
 
         if hasil_filter:
-            simpan_ke_file(hasil_filter, "history_hari_ini.txt", "HISTORY HARI INI")
+            simpan_ke_pdf(hasil_filter, "history_hari_ini.pdf", "HISTORY HARI INI")
         else:
-            print("\n✗ Tidak ada history hari ini")
+            print("\n[X] Tidak ada history hari ini")
 
     elif pilihan == "2":
-        # Print history beberapa hari terakhir
         try:
             hari = int(input("\nMasukkan jumlah hari terakhir: "))
             if hari < 1:
-                print("✗ Jumlah hari harus lebih dari 0")
+                print("[X] Jumlah hari harus lebih dari 0")
                 return
 
             batas_tanggal = sekarang - timedelta(days=hari)
@@ -478,44 +481,60 @@ def print_history():
                         pass
 
             if hasil_filter:
-                nama_file = f"history_{hari}_hari.txt"
-                simpan_ke_file(hasil_filter, nama_file, f"HISTORY {hari} HARI TERAKHIR")
+                nama_file = f"history_{hari}_hari.pdf"
+                simpan_ke_pdf(hasil_filter, nama_file, f"HISTORY {hari} HARI TERAKHIR")
             else:
-                print(f"\n✗ Tidak ada history dalam {hari} hari terakhir")
+                print(f"\n[X] Tidak ada history dalam {hari} hari terakhir")
 
         except ValueError:
-            print("✗ Input harus berupa angka!")
+            print("[X] Input harus berupa angka!")
 
     else:
-        # Print semua history
         isi_history = baca_history()
         if isi_history:
-            simpan_ke_file(isi_history, "semua_history.txt", "SEMUA HISTORY")
+            simpan_ke_pdf(isi_history, "semua_history.pdf", "SEMUA HISTORY")
         else:
-            print("\n✗ History masih kosong")
+            print("\n[X] History masih kosong")
 
 
-def simpan_ke_file(isi_history, nama_file, judul):
-    """Simpan history ke file txt"""
+def simpan_ke_pdf(isi_history, nama_file, judul):
+    """Simpan history ke file PDF yang rapih dan terstruktur"""
     try:
-        with open(nama_file, "w") as file:
-            file.write(f"=== {judul} ===\n")
-            file.write(f"{'No':<4} | {'Hari':<8} | {'Waktu Buka':<20} | {'URL Website'}\n")
-            file.write("-" * 85 + "\n")
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", "B", 16)
+        pdf.cell(0, 10, judul, ln=True, align="C")
+        pdf.ln(5)
 
-            for i, baris in enumerate(isi_history):
-                parts = baris.strip().split(" | ", 1)
-                if len(parts) == 2:
-                    waktu, url = parts
-                    hari = get_hari_indonesia(waktu)
-                    file.write(f"{i+1:<4} | {hari:<8} | {waktu:<20} | {url}\n")
+        pdf.set_font("Arial", "B", 10)
+        pdf.set_fill_color(200, 220, 255)
+        pdf.cell(10, 8, "No", 1, 0, "C", True)
+        pdf.cell(25, 8, "Hari", 1, 0, "C", True)
+        pdf.cell(45, 8, "Waktu Buka", 1, 0, "C", True)
+        pdf.cell(0, 8, "URL Website", 1, 1, "C", True)
 
-            file.write("-" * 85 + "\n")
-            file.write(f"Total: {len(isi_history)} data\n")
+        pdf.set_font("Arial", "", 9)
+        for i, baris in enumerate(isi_history):
+            parts = baris.strip().split(" | ", 1)
+            if len(parts) == 2:
+                waktu, url = parts
+                hari = get_hari_indonesia(waktu)
+                pdf.cell(10, 7, str(i + 1), 1, 0, "C")
+                pdf.cell(25, 7, hari, 1, 0, "L")
+                pdf.cell(45, 7, waktu, 1, 0, "L")
+                pdf.cell(0, 7, url[:60] + ("..." if len(url) > 60 else ""), 1, 1, "L")
 
-        print(f"✓ History berhasil disimpan ke file: {nama_file}")
+        pdf.ln(5)
+        pdf.set_font("Arial", "I", 9)
+        pdf.cell(0, 7, f"Total: {len(isi_history)} data", ln=True, align="R")
+
+        pdf.set_font("Arial", "I", 8)
+        pdf.cell(0, 7, f"Dicetak pada: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True, align="R")
+
+        pdf.output(nama_file)
+        print(f"[OK] History berhasil disimpan ke file PDF: {nama_file}")
     except Exception as e:
-        print(f"✗ Gagal menyimpan file: {e}")
+        print(f"[X] Gagal menyimpan file PDF: {e}")
 
 
 def main():
@@ -541,7 +560,7 @@ def main():
             print("\nTerima kasih! Sampai jumpa!")
             break
         else:
-            print("\n✗ Pilih yang bener dong! Pilih 0-6")
+            print("\n[X] Pilih yang bener dong! Pilih 0-6")
 
 if __name__ == "__main__":
     main()
