@@ -199,7 +199,7 @@ def cari_history():
         return
 
     print("\n=== PILIH JENIS PENCARIAN ===")
-    print("1. Cari berdasarkan nama website")
+    print("1. Cari berdasarkan nama")
     print("2. Cari berdasarkan tanggal")
     print("=================================")
 
